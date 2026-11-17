@@ -1,9 +1,12 @@
 import React from 'react';
-import { languages, defaultLang, ui } from '../i18n/ui';
+import { languages, defaultLang } from '../i18n/ui';
+import { SITE_BASE, stripBase } from '../lib/url';
 
 export function LanguagePicker({ currentLang, currentPath }: { currentLang: string, currentPath: string }) {
   const getPathForLang = (lang: string) => {
-    const parts = currentPath.split('/').filter(Boolean);
+    // `currentPath` is an app route (`/`, `/menu`, `/fr/menu`); make sure the
+    // GitHub Pages subpath is not part of the segments we rewrite.
+    const parts = stripBase(currentPath).split('/').filter(Boolean);
     const hasLangPrefix = parts.length > 0 && Object.keys(languages).includes(parts[0]);
     
     // If target is default lang, remove prefix
@@ -14,7 +17,7 @@ export function LanguagePicker({ currentLang, currentPath }: { currentLang: stri
       else parts.unshift(lang);
     }
     
-    return '/' + parts.join('/');
+    return `${SITE_BASE}/${parts.join('/')}`;
   };
 
   return (

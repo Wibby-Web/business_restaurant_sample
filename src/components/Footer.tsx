@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslations } from '../i18n/utils';
+import { localeLink } from '../lib/url';
 import type { ui } from '../i18n/ui';
 import { FaInstagram, FaFacebookF, FaTwitter, FaYoutube } from 'react-icons/fa';
 
 export function Footer({ currentLang }: { currentLang: keyof typeof ui }) {
   const t = useTranslations(currentLang);
-  const basePath = currentLang === 'en' ? '' : `/${currentLang}`;
   
   return (
     <footer className="bg-zinc-950 text-white py-16">
@@ -13,7 +13,7 @@ export function Footer({ currentLang }: { currentLang: keyof typeof ui }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Logo and Contact col */}
           <div className="col-span-1 md:col-span-1 flex flex-col items-start">
-            <a href={`${basePath}/`} className="text-3xl font-black tracking-tight text-white mb-6">
+            <a href={localeLink(currentLang, '/')} className="text-3xl font-black tracking-tight text-white mb-6">
               MAPLE DINE
             </a>
             <div className="flex items-center space-x-2 text-zinc-400 mb-2">

@@ -3,6 +3,7 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import '../styles/global.css';
 import type { ui } from '../i18n/ui';
+import { assetUrl, stripBase } from '../lib/url';
 
 interface Props {
 	title: string;
@@ -11,7 +12,8 @@ interface Props {
 }
 
 const { title, lang, isHome = false } = Astro.props;
-const currentPath = Astro.url.pathname;
+// Strip the GitHub Pages subpath so components see app routes (`/menu`, `/fr/menu`).
+const currentPath = stripBase(Astro.url.pathname);
 ---
 
 <!doctype html>
@@ -20,7 +22,7 @@ const currentPath = Astro.url.pathname;
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro restaurant website" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href={assetUrl('favicon.svg')} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
