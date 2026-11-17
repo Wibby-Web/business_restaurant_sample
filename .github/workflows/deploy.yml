@@ -1,0 +1,51 @@
+# Builds the Astro site and publishes it to GitHub Pages.
+#
+# Required one-time setup on GitHub:
+#   Settings -> Pages -> Build and deployment -> Source = "GitHub Actions"
+# (Branch-based deployment cannot work for this repo: `dist/` is gitignored,
+#  so the branch never contains an index.html.)
+name: Deploy to GitHub Pages
+
+on:
+  # The published site is built from the `develop` branch.
+  push:
+    branches: [develop]
+  # Allows manual runs from the Actions tab.
+  workflow_dispatch:
+
+# Allow the job to clone the repo and create a Pages deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment at a time; let an in-flight run finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install, build, and upload the site
+        uses: withastro/action@v6
+        with:
+          # package.json engines requires Node >= 22.12.0
+          node-version: 22
+          # package-manager is auto-detected from package-lock.json (npm),
+          # build-cmd defaults to `npm run build`, and out-dir to `dist`.
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
